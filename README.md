@@ -1,5 +1,7 @@
 # MegaMan
 
+![MegaMan](docs/megaman-1.png)
+
 MegaMan is a `Telegram` groups manager bot, can destroy all of the spammers and flooders.
 
 ## Dependencies

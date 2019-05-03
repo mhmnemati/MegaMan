@@ -1,42 +1,28 @@
-import {BootMixin} from '@loopback/boot';
-import {ApplicationConfig} from '@loopback/core';
-import {
-  RestExplorerBindings,
-  RestExplorerComponent,
-} from '@loopback/rest-explorer';
-import {RepositoryMixin} from '@loopback/repository';
-import {RestApplication} from '@loopback/rest';
-import {ServiceMixin} from '@loopback/service-proxy';
-import * as path from 'path';
-import {MySequence} from './sequence';
+import { BootMixin } from "@loopback/boot";
+import { ServiceMixin } from "@loopback/service-proxy";
+import { RepositoryMixin } from "@loopback/repository";
+import { Application, ApplicationConfig } from "@loopback/core";
+
+import { MegaManTelegrafServer } from "@megaman/servers/telegraf/server";
 
 export class MegaManApplication extends BootMixin(
-  ServiceMixin(RepositoryMixin(RestApplication)),
+    ServiceMixin(RepositoryMixin(Application))
 ) {
-  constructor(options: ApplicationConfig = {}) {
-    super(options);
+    constructor(options: ApplicationConfig = {}) {
+        super(options);
 
-    // Set up the custom sequence
-    this.sequence(MySequence);
+        // Booter configs
+        this.projectRoot = __dirname;
+        this.bootOptions = {
+            controllers: {
+                dirs: ["servers"],
+                extensions: [".controller.js"],
+                nested: true
+            },
+            repositories: {}
+        };
 
-    // Set up default home page
-    this.static('/', path.join(__dirname, '../public'));
-
-    // Customize @loopback/rest-explorer configuration here
-    this.bind(RestExplorerBindings.CONFIG).to({
-      path: '/explorer',
-    });
-    this.component(RestExplorerComponent);
-
-    this.projectRoot = __dirname;
-    // Customize @loopback/boot Booter Conventions here
-    this.bootOptions = {
-      controllers: {
-        // Customize ControllerBooter Conventions here
-        dirs: ['controllers'],
-        extensions: ['.controller.js'],
-        nested: true,
-      },
-    };
-  }
+        // Servers binding
+        this.server(MegaManTelegrafServer);
+    }
 }
