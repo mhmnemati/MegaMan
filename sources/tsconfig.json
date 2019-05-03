@@ -1,0 +1,15 @@
+{
+    "$schema": "http://json.schemastore.org/tsconfig",
+    "extends": "@loopback/build/config/tsconfig.common.json",
+    "compilerOptions": {
+        "skipLibCheck": true,
+        "rootDir": "src",
+        "moduleResolution": "node",
+        "baseUrl": "./",
+        "paths": {
+            "*": ["types/*"],
+            "@megaman/*": ["src/*"]
+        }
+    },
+    "include": ["src"]
+}
