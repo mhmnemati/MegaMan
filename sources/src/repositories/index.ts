@@ -1,6 +1,3 @@
-export * from "./repository.megaman";
-export * from "./safe.repository.megaman";
-
 export * from "./group/group.repository";
 
 export * from "./user/user.repository";

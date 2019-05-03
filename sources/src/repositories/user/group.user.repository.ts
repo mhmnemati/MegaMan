@@ -1,65 +1,52 @@
-import { inject } from "@loopback/core";
-import { Filter } from "@loopback/repository";
+import { inject, Getter } from "@loopback/core";
+import {
+    repository,
+    DefaultCrudRepository,
+    BelongsToAccessor
+} from "@loopback/repository";
 import { MongoDBDataSource } from "@megaman/datasources";
 
-import {
-    MegaManSafeRepository,
-    MegaManCRUDRepository
-} from "@megaman/repositories";
+import { GroupRepository, UserRepository } from "@megaman/repositories";
 
-import { GroupUser } from "@megaman/models";
-// import { MegaManController } from "@megaman/servers/rest/controllers";
+import { GroupUser, Group, User } from "@megaman/models";
 
-export interface GroupUserOptions {
-    // controller: MegaManController;
-}
-
-export class GroupUserRepository extends MegaManSafeRepository<
+export class GroupUserRepository extends DefaultCrudRepository<
     GroupUser,
     typeof GroupUser.prototype.id
 > {
-    constructor(@inject("datasources.MongoDB") dataSource: MongoDBDataSource) {
-        const access = {
-            accessOptions: async (
-                filter?: Filter<GroupUser>,
-                options?: GroupUserOptions
-            ) => {
-                let safeOptions = options as GroupUserOptions;
+    public readonly group: BelongsToAccessor<
+        Group,
+        typeof GroupUser.prototype.id
+    >;
+    public readonly user: BelongsToAccessor<
+        User,
+        typeof GroupUser.prototype.id
+    >;
+    public readonly parent: BelongsToAccessor<
+        User,
+        typeof GroupUser.prototype.id
+    >;
 
-                // get options
+    constructor(
+        @inject("datasources.MongoDB") dataSource: MongoDBDataSource,
+        @repository.getter(GroupRepository)
+        groupRepositoryGetter: Getter<GroupRepository>,
+        @repository.getter(UserRepository)
+        userRepositoryGetter: Getter<UserRepository>
+    ) {
+        super(GroupUser, dataSource);
 
-                return safeOptions;
-            },
-            accessCreate: async (options: GroupUserOptions) => {
-                return false;
-            },
-            accessRead: async (
-                options: GroupUserOptions,
-                entity: GroupUser
-            ) => {
-                return true;
-            },
-            accessUpdate: async (
-                options: GroupUserOptions,
-                entity: GroupUser
-            ) => {
-                return false;
-            },
-            accessDelete: async (
-                options: GroupUserOptions,
-                entity: GroupUser
-            ) => {
-                return false;
-            }
-        };
-
-        super(
-            GroupUser,
-            new MegaManCRUDRepository<GroupUser, typeof GroupUser.prototype.id>(
-                GroupUser,
-                dataSource
-            ),
-            access
+        this.group = this.createBelongsToAccessorFor(
+            "group",
+            groupRepositoryGetter
+        );
+        this.user = this.createBelongsToAccessorFor(
+            "user",
+            userRepositoryGetter
+        );
+        this.parent = this.createBelongsToAccessorFor(
+            "parent",
+            userRepositoryGetter
         );
     }
 }

@@ -1,56 +1,31 @@
-import { inject } from "@loopback/core";
-import { Filter } from "@loopback/repository";
+import { inject, Getter } from "@loopback/core";
+import {
+    repository,
+    DefaultCrudRepository,
+    BelongsToAccessor
+} from "@loopback/repository";
 import { MongoDBDataSource } from "@megaman/datasources";
 
-import {
-    MegaManSafeRepository,
-    MegaManCRUDRepository
-} from "@megaman/repositories";
+import { GroupRepository } from "@megaman/repositories";
 
-import { Spam } from "@megaman/models";
-// import { MegaManController } from "@megaman/servers/rest/controllers";
+import { Spam, Group } from "@megaman/models";
 
-export interface SpamOptions {
-    // controller: MegaManController;
-}
-
-export class SpamRepository extends MegaManSafeRepository<
+export class SpamRepository extends DefaultCrudRepository<
     Spam,
     typeof Spam.prototype.id
 > {
-    constructor(@inject("datasources.MongoDB") dataSource: MongoDBDataSource) {
-        const access = {
-            accessOptions: async (
-                filter?: Filter<Spam>,
-                options?: SpamOptions
-            ) => {
-                let safeOptions = options as SpamOptions;
+    public readonly group: BelongsToAccessor<Group, typeof Spam.prototype.id>;
 
-                // get options
+    constructor(
+        @inject("datasources.MongoDB") dataSource: MongoDBDataSource,
+        @repository.getter(GroupRepository)
+        groupRepositoryGetter: Getter<GroupRepository>
+    ) {
+        super(Spam, dataSource);
 
-                return safeOptions;
-            },
-            accessCreate: async (options: SpamOptions) => {
-                return false;
-            },
-            accessRead: async (options: SpamOptions, entity: Spam) => {
-                return true;
-            },
-            accessUpdate: async (options: SpamOptions, entity: Spam) => {
-                return false;
-            },
-            accessDelete: async (options: SpamOptions, entity: Spam) => {
-                return false;
-            }
-        };
-
-        super(
-            Spam,
-            new MegaManCRUDRepository<Spam, typeof Spam.prototype.id>(
-                Spam,
-                dataSource
-            ),
-            access
+        this.group = this.createBelongsToAccessorFor(
+            "group",
+            groupRepositoryGetter
         );
     }
 }
