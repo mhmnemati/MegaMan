@@ -47,6 +47,7 @@
         "@loopback/rest-explorer": "^1.1.18",
         "@loopback/service-proxy": "^1.1.6",
         "dotenv-safe": "^6.1.0",
+        "telegraf": "^3.29.0",
         "uuid": "^3.3.2"
     },
     "devDependencies": {
