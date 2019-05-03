@@ -22,7 +22,7 @@ export class MegaManTelegrafServer extends Context implements Server {
         this._server = new Telegraf(process.env.BOT_TOKEN as string, {
             username: process.env.BOT_USERNAME
         });
-
+        // bind controllers
         await this._server.launch();
         this._listening = true;
 
