@@ -4,7 +4,6 @@ import { Entity, model, property } from "@loopback/repository";
 export class Rule extends Entity {
     @property({
         type: "string",
-        defaultFn: "uuidv4",
         id: true
     })
     id: string;

@@ -6,7 +6,6 @@ import { Group, Rule } from "@megaman/models";
 export class GroupRule extends Entity {
     @property({
         type: "string",
-        defaultFn: "uuidv4",
         id: true
     })
     id: string;

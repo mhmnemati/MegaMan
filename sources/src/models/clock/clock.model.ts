@@ -6,7 +6,6 @@ import { Group } from "@megaman/models";
 export class Clock extends Entity {
     @property({
         type: "string",
-        defaultFn: "uuidv4",
         id: true
     })
     id: string;

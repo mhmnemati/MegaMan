@@ -1,3 +1,5 @@
+export * from "./model.megaman";
+
 export * from "./group/group.model";
 
 export * from "./user/user.model";

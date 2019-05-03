@@ -6,7 +6,6 @@ import { Group, User } from "@megaman/models";
 export class GroupUser extends Entity {
     @property({
         type: "string",
-        defaultFn: "uuidv4",
         id: true
     })
     id: string;
